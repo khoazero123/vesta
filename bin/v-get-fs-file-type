@@ -27,14 +27,18 @@ if [ -z $homedir ]; then
 fi
 
 # Checking path
-rpath=$(readlink -f "$path")
-if [ -z "$(echo $rpath |grep $homedir)" ]; then
+rpath=$(readlink -f "$path") # Error: invalid path <- symbolic link 
+
+# Add by khoazero123
+if [ "$path" != "$rpath" ] && [ "$user" == 'admin' ]; then
+    path="$rpath"
+elif [ -z "$(echo $rpath | grep $homedir)" ]; then # -z: The lengh of STRING is zero (ie it is empty).
     echo "Error: invalid path $path"
     exit 2
 fi
 
 # Listing file type
-sudo -u $user file -i -b "$path" 2>/dev/null
+sudo -u $user file -i -b "$path" 2>/dev/null # File empty -> application/x-empty; charset=binary
 
 # Exiting
 exit $?

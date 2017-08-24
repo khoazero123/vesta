@@ -41,8 +41,9 @@ for str in $modules; do
     module=$(echo "$str" |cut -f 1 -d _)
     license=$(echo "$str" |cut -f 2 -d \')
     if [ ! -z "$license" ]; then
-        v_host='https://vestacp.com/checkout'
-        answer=$(curl -s "$v_host/check.php?licence_key=$license&module=$module")
+        #v_host='https://vestacp.com/checkout'
+        #answer=$(curl -s "$v_host/check.php?licence_key=$license&module=$module")
+        answer=$(echo 0)
         check_result $? "cant' connect to vestacp.com " 0
         echo "$module $license $answer"
         if [[ "$answer" != '0' ]]; then

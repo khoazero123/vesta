@@ -87,7 +87,8 @@ done
 # Changing file owner & permission
 chown -R $user:$user $HOMEDIR/$user/web/$domain
 chown root:$user /var/log/$WEB_SYSTEM/domains/$domain.* $conf
-chmod 640 /var/log/$WEB_SYSTEM/domains/$domain.*
+# 640 -> 660 : user cannot save file .log
+chmod 660 /var/log/$WEB_SYSTEM/domains/$domain.*
 chmod 751 $HOMEDIR/$user/web/$domain $HOMEDIR/$user/web/$domain/*
 chmod 551 $HOMEDIR/$user/web/$domain/stats $HOMEDIR/$user/web/$domain/logs
 

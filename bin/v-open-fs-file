@@ -29,7 +29,8 @@ fi
 # Checking path
 if [ ! -z "$src_file" ]; then
     rpath=$(readlink -f "$src_file")
-    if [ -z "$(echo $rpath |egrep "^/tmp|^$homedir")" ]; then
+    #if [ -z "$(echo $rpath |egrep "^/tmp|^$homedir")" ] && [ "$user" != 'admin' ]; then
+    if [ -z "$(echo $src_file |egrep "^/tmp|^$homedir")" ] && [ "$user" != 'admin' ]; then
         echo "Error: invalid source path $src_file"
         exit 2
     fi
@@ -41,6 +42,10 @@ if [ ! -z "$src_file" ]; then
 fi
 
 # Reading file
+#if [ "$user" == 'admin' ]; then
+    #user="root"
+#fi
+
 sudo -u $user cat "$src_file" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Error: file $src_file was not opened"

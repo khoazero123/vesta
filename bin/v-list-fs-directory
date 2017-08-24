@@ -29,15 +29,18 @@ fi
 # Checking path
 if [ ! -z "$path" ]; then
     rpath=$(readlink -f "$path")
-    if [ -z "$(echo $rpath |grep $homedir)" ]; then
+    if [ -z "$(echo $rpath |grep $homedir)" ] && [ "$user" != 'admin' ]; then
     echo "Error: invalid path $dst_dir"
         exit 2
     fi
-else
+elif [ "$user" != 'admin' ]; then
     path=$homedir
 fi
 
 # Listing directory
+if [ "$user" == 'admin' ]; then
+    user="root"
+fi
 sudo -u $user find "$path" -maxdepth 1 \
     -printf "%y|%m|%TY-%Tm-%Td|%TH:%TM|%u|%g|%s|%P\n" 2>/dev/null
 

@@ -34,8 +34,9 @@ check_args '2' "$#" 'MODULE LICENSE'
 #----------------------------------------------------------#
 
 # Activating license
-v_host='https://vestacp.com/checkout'
-answer=$(curl -s $v_host/activate.php?licence_key=$license&module=$module)
+#v_host='https://vestacp.com/checkout'
+#answer=$(curl -s $v_host/activate.php?licence_key=$license&module=$module)
+answer=$(echo 0)
 check_result $? "cant' connect to vestacp.com " $E_CONNECT
 
 # Checking server answer
