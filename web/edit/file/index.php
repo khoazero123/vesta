@@ -31,8 +31,7 @@ if (($_SESSION['user'] == 'admin') && (!empty($_SESSION['look']))) {
 <div id="message" style="display:none; position: absoulte;background-color: green; color: white; padding: 10px;"></div>
 <div id="error-message" style="display:none; position: absoulte;background-color: red; color: white; padding: 10px;"></div>
 
-<?php 
-
+<?php
     if (!empty($_REQUEST['path'])) {
         $content = '';
         $path = $_REQUEST['path'];
@@ -47,21 +46,24 @@ if (($_SESSION['user'] == 'admin') && (!empty($_SESSION['look']))) {
                 chmod($fn, 0644);
 
                 if ($f) {
-                    exec (VESTA_CMD . "v-copy-fs-file {$user} {$fn} ".escapeshellarg($path), $output, $return_var);
+                    $cmd = VESTA_CMD . "v-copy-fs-file {$user} {$fn} ".escapeshellarg($path);
+                    exec ($cmd, $output, $return_var);
                     $error = check_return_code($return_var, $output);
                     if ($return_var != 0) {
-                        print('<p style="color: white">Error while saving file</p>');
+                        $output[] = $cmd;
+                        print('<p style="color: white">'.implode('<br>', $output).'</p>');
                         exit;
                     }
                 }
                 unlink($fn);
             }
         }
-
-        exec (VESTA_CMD . "v-open-fs-file {$user} ".escapeshellarg($path), $content, $return_var);
+        $cmd = VESTA_CMD . "v-open-fs-file {$user} ".escapeshellarg($path);
+        exec ($cmd, $content, $return_var);
         if ($return_var != 0) {
-            print 'Error while opening file'; // todo: handle this more styled
-            exit;
+            //print 'Error while opening file'; // todo: handle this more styled
+            //exit;
+            $content[] = 'CMD: '.$cmd;
         }
         $content = implode("\n", $content)."\n";
     } else {
