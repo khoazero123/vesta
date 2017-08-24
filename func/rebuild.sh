@@ -184,7 +184,8 @@ rebuild_web_domain_conf() {
         $HOMEDIR/$user/web/$domain/public_html \
         $HOMEDIR/$user/web/$domain/public_shtml \
         $HOMEDIR/$user/web/$domain/document_errors
-    chmod 640 /var/log/$WEB_SYSTEM/domains/$domain.*
+    # 640 -> 660 : user cannot save file .log
+    chmod 660 /var/log/$WEB_SYSTEM/domains/$domain.*
 
     # Set ownership
     chown $user:$user $HOMEDIR/$user/web/$domain \
