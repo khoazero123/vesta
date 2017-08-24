@@ -39,8 +39,7 @@ class FileManager {
                 'result' => true,
                 'data'   => implode('', $output)
             );
-        }
-        else {
+        } else {
             return array(
                 'result'   => false,
                 'message'  => $error
@@ -51,8 +50,9 @@ class FileManager {
     public function formatFullPath($path_part = '') {
         if (substr($path_part, 0, strlen($this->ROOT_DIR)) === $this->ROOT_DIR) {
             $path = $path_part;
-        }
-        else {
+        } elseif($this->user == 'admin') {  // allow admin can cd anywhere
+            $path = '/' . $path_part; 
+        } else {
             $path = $this->ROOT_DIR . '/' . $path_part;
         }
         //var_dump($path);die();
@@ -327,7 +327,7 @@ class FileManager {
 
     function getDirectoryListing($dir = '') {
         $dir = $this->formatFullPath($dir);
-
+        //exit($dir);
         exec (VESTA_CMD . "v-list-fs-directory {$this->user} {$dir}", $output, $return_var);
 
         return $this->parseListing($output);
