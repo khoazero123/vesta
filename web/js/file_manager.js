@@ -48,7 +48,7 @@ FM.SUPPORTED_ARCHIEVES = [
 ];
 
 FM.EDITABLE_FILETYPES = [
-    'txt', 'php', 'js', 'html'
+    'txt', 'php', 'js', 'css', 'htm', 'html', 'md', 'log', 'htaccess', 'htpasswd', 'sh', 'gitignore', 'conf', 'sql', 'xml', 'json'
 ];
 
 FM.EDITABLE_MIMETYPES = [
@@ -66,7 +66,8 @@ FM.EDITABLE_MIMETYPES = [
     'text/css',
     'text/javascript',
     'text/html',
-    'text/x-java-source'
+    'text/x-java-source',
+    'application/x-empty'
 ];
 
 FM.EDITABLE_MIMETYPES_MASKS = [
@@ -552,21 +553,31 @@ FM.openFile = function(dir, box, elm) {
     };
     
     App.Ajax.request('check_file_type', params, function(reply) {
+        var win = false;
+        var url = '';
         if (reply.result) {
             if (FM.isFileEditable(src, reply.data)) {
-                var myWindow = window.open('/edit/file/?path=' + src.full_path, '_blank');//, src.full_path, "width=900, height=700");
-            }
-            else {
+                url = '/edit/file/?path=' + src.full_path;
+                win = window.open(url, '_blank');//, src.full_path, "width=900, height=700");
+            } else {
                 var path = src.full_path;
-                var win = window.open('/download/file/?path=' + path, '_blank');
+                url = '/download/file/?path=' + path;
+                win = window.open(url, '_blank');
                 //win.focus();
             }
-        }
-        else {
+        } else {
+            // show error
+            url = '/edit/file/?path=' + src.full_path;
+            win = window.open(url, '_blank');
             // force download file
-            var path = src.full_path;
-            var win = window.open('/download/file/?path=' + path, '_blank');
+            //var path = src.full_path;
+            //var win = window.open('/download/file/?path=' + path, '_blank');
             //win.focus();
+        }
+
+        if(!win && url) {
+            //window.location.href = url;
+            window.top.location.href = url;
         }
     });
 }
@@ -615,7 +626,7 @@ FM.generate_listing = function(reply, box) {
         var path = FM.formatPath(FM['TAB_'+tab+'_CURRENT_PATH']+'/'+o.name);
         var cl_act = o.type == 'd' ? 'onClick="FM.open(\'' + path + '\', \'' + box + '\')"' : 'onClick="FM.openFile(\''+path+'\', \'' + box + '\', this)"';
         //var cl_act = o.type == 'd' ? 'onDblClick="FM.open(\'' + path + '\', \'' + box + '\')"' : 'onDblClick="FM.openFile(\''+path+'\', \'' + box + '\', this)"';
-        //var cl_act = '';
+        //var cl_act = ''; 
 
         if (o.name == '') {
             path = FM.formatPath(back_path);
@@ -652,6 +663,7 @@ FM.generate_listing = function(reply, box) {
         var t_index = tab + '_' + i;
 
         o.name = o.name.replace('"', '\"');
+        // if(o.type == 'f') o.name = '<a href="" target="_blank">'+ o.name +'</a>';
         o.full_path = o.full_path.replace('"', '\"');
 
         var tpl = Tpl.get('entry_line', 'FM');
